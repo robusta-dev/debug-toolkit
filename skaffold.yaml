@@ -1,0 +1,16 @@
+apiVersion: skaffold/v2beta1
+kind: Config
+metadata:
+  name: python-tools
+build:
+  artifacts:
+  - image: us-central1-docker.pkg.dev/arabica-300319/devel/python-tools
+    docker:
+      dockerfile: Dockerfile
+  local:
+    push: true
+    concurrency: 0
+deploy:
+  kubectl:
+    manifests:
+    - test.yaml
