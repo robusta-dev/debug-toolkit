@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends procps gdb git gcc python3-dev \
+  && apt-get install -y --no-install-recommends procps gdb git \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/*
 

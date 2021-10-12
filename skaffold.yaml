@@ -14,3 +14,16 @@ deploy:
   kubectl:
     manifests:
     - test.yaml
+
+
+profiles:
+- name: apple-m1-dev
+  build:
+    artifacts:
+      - image: us-central1-docker.pkg.dev/arabica-300319/devel/python-tools
+        context: .
+        custom:
+          buildCommand: ./build_on_apple_m1.sh
+    local:
+      push: true
+      concurrency: 0

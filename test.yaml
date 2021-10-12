@@ -11,6 +11,7 @@ spec:
       image: us-central1-docker.pkg.dev/arabica-300319/devel/python-tools:latest
       imagePullPolicy: Always
       securityContext:
+        privileged: true
         capabilities:
           add:
             - SYS_PTRACE
