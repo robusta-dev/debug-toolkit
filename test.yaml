@@ -1,17 +1,26 @@
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: python-tools
   labels:
     app: python-tools
 spec:
-  hostPID: true
-  containers:
-    - name: python-tools
-      image: us-central1-docker.pkg.dev/arabica-300319/devel/python-tools:latest
-      imagePullPolicy: Always
-      securityContext:
-        privileged: true
-        capabilities:
-          add:
-            - SYS_PTRACE
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-tools
+  template:
+    metadata:
+      labels:
+        app: python-tools
+    spec:
+      hostPID: true
+      containers:
+        - name: python-tools
+          image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/python-tools
+          imagePullPolicy: Always
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_PTRACE
