@@ -9,6 +9,7 @@ import time
 import pkgutil
 from pathlib import Path
 from typing import List
+from enum import Enum
 
 import psutil
 import typer
@@ -202,6 +203,19 @@ def memory(pid: int, seconds: int = 60, verbose: bool = False):
     payload = payload.replace("SECONDS_PLACEHOLDER", str(seconds))
     timeout_seconds = int(seconds * 1.1 + 10)
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
+
+class LoggingLevel (Enum):
+    DEBUG = "DEBUG"
+    INFO = "INFO"
+    WARNING = "WARNING"
+    ERROR = "ERROR"
+    CRITICAL = "CRITICAL"
+
+@app.command()
+def set_logging_level(pid: int, level: LoggingLevel, verbose: bool = False):
+    payload = pkgutil.get_data(__package__, "payloads/set_logging_level.py").decode()
+    payload = payload.replace("LOGGING_LEVEL_PLACEHOLDER", level.value)
+    inject_string(pid, payload, trampoline=True, trampoline_timeout=10, verbose=verbose)
 
 
 if __name__ == "__main__":
