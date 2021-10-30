@@ -25,7 +25,7 @@ def entrypoint(output_path: str):
 
     data = [{"size": s.size, "count": s.size, "traceback": s.traceback.format()} for s in top_stats]
     other_data = {"size": sum(s.size for s in other_stats), "count": sum(s.size for s in other_stats)}
-    total = sum(s.size for s in top_stats)
+    total = sum(s.size for s in stats)
 
     with open(output_path, "w") as output_file:
         output_file.write(json.dumps({"data": data, "other_data" : other_data, "total": total, "overhead": overhead}))
