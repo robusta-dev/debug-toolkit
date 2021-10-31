@@ -4,7 +4,7 @@ metadata:
   name: python-tools
 build:
   artifacts:
-  - image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/python-tools
+  - image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/debug-toolkit
     docker:
       dockerfile: Dockerfile
   local:
@@ -20,7 +20,7 @@ profiles:
 - name: apple-m1-dev
   build:
     artifacts:
-      - image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/python-tools
+      - image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/debug-toolkit
         context: .
         custom:
           buildCommand: ./build_on_apple_m1.sh

@@ -109,10 +109,12 @@ def do_injection(pid, python_code, verbose):
     if verbose:
         typer.echo(f"running gdb with cmd {cmd}")
 
+    # we don't properly catch errors like trying to debug a non existent process
+    # we just wait for them later... fix this by both creating a _start file and by checking stderr / error code
     output = subprocess.check_output(
         cmd, shell=True, stdin=subprocess.PIPE, stderr=subprocess.STDOUT
     )
-
+    
     if verbose:
         typer.echo(output.decode())
 

@@ -17,7 +17,7 @@ spec:
       hostPID: true
       containers:
         - name: python-tools
-          image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/python-tools
+          image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/debug-toolkit
           imagePullPolicy: Always
           securityContext:
             privileged: true
