@@ -206,6 +206,13 @@ def memory(pid: int, seconds: int = 60, verbose: bool = False):
     timeout_seconds = int(seconds * 1.1 + 10)
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
 
+@app.command()
+def debugger(pid: int, port: int = 5678):
+    payload = pkgutil.get_data(__package__, "payloads/debugger.py").decode()
+    payload = payload.replace("LISTENING_PORT_PLACEHOLDER", str(port))
+    timeout_seconds = 60  # might take time for payload to install debugpy
+    inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=True)
+
 class LoggingLevel (Enum):
     DEBUG = "DEBUG"
     INFO = "INFO"
