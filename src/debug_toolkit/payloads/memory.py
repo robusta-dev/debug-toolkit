@@ -28,4 +28,4 @@ def entrypoint(output_path: str):
     total = sum(s.size for s in stats)
 
     with open(output_path, "w") as output_file:
-        output_file.write(json.dumps({"data": data, "other_data" : other_data, "total": total, "overhead": overhead}))
+        output_file.write(json.dumps({"data": data, "other_data": other_data, "total": total, "overhead": overhead}))

@@ -151,7 +151,7 @@ def do_trampoline_injection(pid, payload, verbose, timeout=120):
     with open(abs_done_path, "r") as f:
         status = f.read().strip()
         if status != "SUCCESS" or verbose:
-            typer.secho(f"done status is {f.read()}")
+            typer.secho(f"done status is {status}")
 
     if os.path.exists(abs_output_path):
         with open(abs_output_path, "rb") as f:
@@ -207,11 +207,11 @@ def memory(pid: int, seconds: int = 60, verbose: bool = False):
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
 
 @app.command()
-def debugger(pid: int, port: int = 5678):
+def debugger(pid: int, port: int = 5678, verbose: bool = False):
     payload = pkgutil.get_data(__package__, "payloads/debugger.py").decode()
     payload = payload.replace("LISTENING_PORT_PLACEHOLDER", str(port))
-    timeout_seconds = 60  # might take time for payload to install debugpy
-    inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=True)
+    timeout_seconds = 120  # might take time for payload to install debugpy
+    inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
 
 class LoggingLevel (Enum):
     DEBUG = "DEBUG"
