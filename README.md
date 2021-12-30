@@ -9,8 +9,8 @@ This powers many [Robusta](http://robusta.dev/) features. You should probably us
 This repo contains source code for the docker container that powers the following [Robusta](http://robusta.dev/) features:
 
 1. Inject code into Python apps
-2. Attach a VSCode debugger to any Python application running on Kubernetes
-3. Profile cpu and memory usage of Python apps
+2. [Attach a VSCode debugger to any Python application running on Kubernetes](https://docs.robusta.dev/master/catalog/actions/python-troubleshooting.html#python-debugger)
+3. [Profile cpu and memory usage of Python apps](https://docs.robusta.dev/master/catalog/actions/python-troubleshooting.html#python-profiler)
 4. List processes in any pod (not just Python)
  
 Essentially, it is two things:
