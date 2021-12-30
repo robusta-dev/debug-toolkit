@@ -1,11 +1,20 @@
+A modern code-injection framework for Python + useful utilities.
+
+This is like [Pyrasite](https://github.com/lmacken/pyrasite) but without the bugs and Kubernetes-aware.
+
+This powers many [Robusta](http://robusta.dev/) features. You probably don't want to use this directly. Robusta wraps it with higher-level features.
+
 # Introduction
-This repo contains source code for the docker container that powers the following Robusta features:
+This repo contains source code for the docker container that powers the following [Robusta](http://robusta.dev/) features:
 
-1. List processes in a pod
-2. Profile cpu and memory usage of Python apps
-3. Inject code into Python apps
-
-Essentially, it is just a small docker container that Robusta runs on the same node as the pod you want to debug.
+1. Inject code into Python apps
+2. Attach a VSCode debugger to any Python application running on Kubernetes
+3. Profile cpu and memory usage of Python apps
+4. List processes in any pod (not just Python)
+ 
+Essentially, it is two things:
+1. A [Pyrasite](https://github.com/lmacken/pyrasite) replacement that fixes deadlocks and other issues.
+2. A Docker container containing (1) which is used by Robusta to troubleshoot and debug containers
 
 # Adding new python injection payloads
 1. Add a new payload in src/debug_toolkit/payloads
