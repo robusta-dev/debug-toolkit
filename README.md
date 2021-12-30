@@ -15,7 +15,7 @@ This repo contains source code for the docker container that powers the followin
  
 Essentially, it is two things:
 1. A [Pyrasite](https://github.com/lmacken/pyrasite) replacement that fixes deadlocks and other issues.
-2. A Docker container containing (1) which is used by Robusta to troubleshoot and debug containers
+2. A Docker container containing that Pyrasite replacement, which is used by Robusta to troubleshoot and debug containers
 
 # Adding new python injection payloads
 1. Add a new payload in src/debug_toolkit/payloads
