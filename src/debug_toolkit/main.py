@@ -207,6 +207,12 @@ def memory(pid: int, seconds: int = 60, verbose: bool = False):
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
 
 @app.command()
+def stack_trace(pid: int, frames: bool = False, verbose: bool = False):
+    payload = pkgutil.get_data(__package__, "payloads/stack_trace.py").decode()
+    payload = payload.replace("ALL_THREADS_PLACEHOLDER", str(frames))
+    inject_string(pid, payload, trampoline=True, trampoline_timeout=10, verbose=verbose)
+
+@app.command()
 def debugger(pid: int, port: int = 5678, verbose: bool = False):
     payload = pkgutil.get_data(__package__, "payloads/debugger.py").decode()
     payload = payload.replace("LISTENING_PORT_PLACEHOLDER", str(port))
