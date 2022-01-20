@@ -207,9 +207,9 @@ def memory(pid: int, seconds: int = 60, verbose: bool = False):
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
 
 @app.command()
-def stack_trace(pid: int, frames: bool = False, verbose: bool = False):
+def stack_trace(pid: int, all_threads: bool = True, verbose: bool = False):
     payload = pkgutil.get_data(__package__, "payloads/stack_trace.py").decode()
-    payload = payload.replace("ALL_THREADS_PLACEHOLDER", str(frames))
+    payload = payload.replace("ALL_THREADS_PLACEHOLDER", str(all_threads))
     inject_string(pid, payload, trampoline=True, trampoline_timeout=10, verbose=verbose)
 
 @app.command()
