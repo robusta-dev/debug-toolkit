@@ -12,7 +12,6 @@ def entrypoint(output_path: str):
             replacement_str = f"{thr.getName()} thread identity:{thr._ident}"
         thread_id_str = '0x{:016x}'.format(thr._ident)
         stack_trace = stack_trace.replace(thread_id_str, replacement_str)
-    stack_trace = stack_trace.replace(thread_id_str, replacement_str)
     with open(output_path, "w+") as output_file:
         output_file.write(stack_trace)
 
