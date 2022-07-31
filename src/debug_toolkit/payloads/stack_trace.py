@@ -5,8 +5,8 @@ def entrypoint(output_path: str):
     import json
 
     ALL_THREADS = bool(ALL_THREADS_PLACEHOLDER)
-    AMOUNT = int(AMOUNT)
-    SLEEP_DURATION_S = int(SLEEP_DURATION_S)
+    AMOUNT = int(AMOUNT_PLACEHOLDER)
+    SLEEP_DURATION_S = int(SLEEP_DURATION_S_PLACEHOLDER)
 
     thread_stack_dumps=[]
     for _ in range(AMOUNT):
@@ -26,7 +26,7 @@ def format_stack_trace(stack_trace: str):
             replacement_str = f"{thr.getName()} tid:{thr._native_id}"
         else:
             replacement_str = f"{thr.getName()} thread identity:{thr._ident}"
-        thread_id_str = '0x{:016x}'.format(thr._ident)
+        thread_id_str = "0x{:016x}".format(thr._ident)
         stack_trace = stack_trace.replace(thread_id_str, replacement_str)
     return stack_trace
 
