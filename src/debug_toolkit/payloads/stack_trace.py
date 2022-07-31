@@ -18,18 +18,28 @@ def entrypoint(output_path: str):
 
 
 def format_stack_trace(stack_trace: str):
-    import sys
-    import threading
 
-    for thr in threading.enumerate():
-        if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
-            #  _native_id is only from python3.8+
-            replacement_str = f"{thr.getName()} tid:{thr._native_id}"
-        else:
-            replacement_str = f"{thr.getName()} thread identity:{thr._ident}"
-        thread_id_str = "0x{:016x}".format(thr._ident)
-        stack_trace = stack_trace.replace(thread_id_str, replacement_str)
-    return stack_trace
+        import sys
+        import threading
+        try:
+            for thr in threading.enumerate():
+                thread_identity = thr._ident
+                if not thread_identity:
+                    continue
+                if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
+                    #  _native_id is only from python3.8+
+                    replacement_str = f"{thr.getName()} tid:{thr._native_id}"
+                else:
+                    replacement_str = f"{thr.getName()} thread identity:{thread_identity}"
+
+                thread_id_str = '0x{:016x}'.format(thread_identity)
+                stack_trace = stack_trace.replace(thread_id_str, replacement_str)
+        except Exception:
+            # formatting sometimes can fail based on python version
+            pass
+        finally:
+            return stack_trace
+
 
 
 def get_traceback(all_threads: bool):
