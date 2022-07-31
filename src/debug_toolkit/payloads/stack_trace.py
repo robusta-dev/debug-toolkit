@@ -1,6 +1,4 @@
 def entrypoint(output_path: str):
-    import threading
-    import sys
     import time
     import json
 
@@ -20,6 +18,9 @@ def entrypoint(output_path: str):
 
 
 def format_stack_trace(stack_trace: str):
+    import sys
+    import threading
+
     for thr in threading.enumerate():
         if sys.version_info[0] >= 3 and sys.version_info[1] >= 8:
             #  _native_id is only from python3.8+
