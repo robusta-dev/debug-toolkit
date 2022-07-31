@@ -214,7 +214,7 @@ def stack_trace(pid: int, all_threads: bool = True, amount: int = 1, sleep_durat
     payload = payload.replace("ALL_THREADS_PLACEHOLDER", str(all_threads))
     payload = payload.replace("AMOUNT_PLACEHOLDER", str(amount))
     payload = payload.replace("SLEEP_DURATION_S_PLACEHOLDER", str(sleep_duration_s))
-    inject_string(pid, payload, trampoline=True, trampoline_timeout=amount+(sleep_duration_s+10), verbose=verbose)
+    inject_string(pid, payload, trampoline=True, trampoline_timeout=amount*(sleep_duration_s+10), verbose=verbose)
 
 @app.command()
 def debugger(pid: int, port: int = 5678, verbose: bool = False):
