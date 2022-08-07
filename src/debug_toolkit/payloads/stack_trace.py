@@ -1,6 +1,7 @@
 def entrypoint(output_path: str):
     import time
     import json
+    import traceback
 
     ALL_THREADS = bool(ALL_THREADS_PLACEHOLDER)
     AMOUNT = int(AMOUNT_PLACEHOLDER)
@@ -8,10 +9,14 @@ def entrypoint(output_path: str):
 
     thread_stack_dumps=[]
     for _ in range(AMOUNT):
-        stack_trace = get_traceback(ALL_THREADS)
-        formated_trace = format_stack_trace(stack_trace)
-        thread_stack_dumps.append({"time": time.time(), "trace": formated_trace})
-        time.sleep(SLEEP_DURATION_S)
+        try:
+            stack_trace = get_traceback(ALL_THREADS)
+            formatted = format_stack_trace(stack_trace)
+            thread_stack_dumps.append({"time": time.time(), "status": "success", "trace": formatted})
+            time.sleep(SLEEP_DURATION_S)
+        except Exception as e:
+            thread_stack_dumps.append({"time": time.time(), "status": "error", "trace": traceback.format_exc(), "error": str(e)})
+
     with open(output_path, "w+") as output_file:
         json_formatted_str = json.dumps(thread_stack_dumps, indent=4)
         output_file.write(json_formatted_str)

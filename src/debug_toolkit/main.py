@@ -207,9 +207,10 @@ def memory(pid: int, seconds: int = 60, verbose: bool = False):
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
 
 @app.command()
-def stack_trace(pid: int, all_threads: bool = True, amount: int = 1, sleep_duration_s: int=0, verbose: bool = False):
+def stack_trace(pid: int, all_threads: bool = True, amount: int = 1, sleep_duration_s: int = 1, verbose: bool = False):
     if amount < 1 or sleep_duration_s < 0:
         typer.secho(f"ERROR! amount must be greater than 1 and sleep must be greater than 0", fg="red")
+        return
     payload = pkgutil.get_data(__package__, "payloads/stack_trace.py").decode()
     payload = payload.replace("ALL_THREADS_PLACEHOLDER", str(all_threads))
     payload = payload.replace("AMOUNT_PLACEHOLDER", str(amount))
