@@ -1,6 +1,8 @@
 FROM python:3.8-slim-buster
 RUN apt-get update \
   && apt-get install -y --no-install-recommends procps gdb git curl \
+  && apt-get install -y gcc python3-dev \
+  && dpkg --add-architecture arm64 \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/*
 
