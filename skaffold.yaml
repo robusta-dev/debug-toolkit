@@ -27,3 +27,14 @@ profiles:
     local:
       push: true
       concurrency: 0
+
+- name: arm
+  build:
+    artifacts:
+      - image: us-central1-docker.pkg.dev/genuine-flight-317411/devel/debug-toolkit
+        context: .
+        custom:
+          buildCommand: ./build_with_arm.sh
+    local:
+      push: true
+      concurrency: 0
