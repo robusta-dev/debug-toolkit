@@ -8,25 +8,14 @@ import textwrap
 import time
 import pkgutil
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 from enum import Enum
 
 import psutil
 import typer
 from pydantic import BaseModel
 
-kube_regex = re.compile(r"\d+:.+:/kubepods/[^/]+/pod([^/]+)/([0-9a-f]{64})")
-docker_regex = re.compile(r"\d+:.+:/docker/pod([^/]+)/([0-9a-f]{64})")
-other_regex = re.compile(r"\d+:.+:/docker/.*/pod([^/]+)/([0-9a-f]{64})")
-other_regex2 = re.compile(r"\d+:.+:/kubepods/.*/pod([^/]+)/([0-9a-f]{64})")
-other_regex3 = re.compile(
-    r"\d+:.+:/kubepods\.slice/kubepods-[^/]+\.slice/kubepods-[^/]+-pod([^/]+)\.slice/docker-([0-9a-f]{64})"
-)
-
 app = typer.Typer()
-
-
-# TODO: split to pod and python subcommands
 
 
 class Process(BaseModel):
@@ -39,46 +28,43 @@ class ProcessList(BaseModel):
     processes: List[Process]
 
 
-def get_process_details(pid: int):
+def is_process_in_pod(pid: int, pod_id: str, container_ids: List[str]) -> bool:
     # see https://man7.org/linux/man-pages/man7/cgroups.7.html
+    # and https://github.com/elastic/apm-agent-python/blob/main/elasticapm/utils/cgroup.py
+    all_ids = [pod_id.lower(), *container_ids]
+    all_ids = [id.lower() for id in all_ids]
+
     try:
-        path = "/proc/%d/cgroup" % (pid,)
+        path = f"/proc/{pid}/cgroup"
         with open(path, "r") as f:
-            lines = f.readlines()
-            for line in lines:
-                match = (
-                    kube_regex.match(line)
-                    or docker_regex.match(line)
-                    or other_regex.match(line)
-                    or other_regex2.match(line)
-                    or other_regex3.match(line)
-                )
-                if match is not None:
-                    # pod, container
-                    return match.group(1).replace("_", "-"), match.group(2)
+            content = f.read().lower()
+            if any(id in content for id in all_ids):
+                return True
     except Exception as e:
         print("exception:", e)
-    return None, None
+    return False
 
 
-def get_pod_processes(pod_uid: str) -> ProcessList:
+def get_pod_processes(pod_id: str, container_ids: Optional[List[str]]) -> ProcessList:
     processes = []
+    if container_ids is None:
+        container_ids = []
+
     for pid in psutil.pids():
-        this_pod_uid, container_uid = get_process_details(pid)
-        if this_pod_uid is not None and this_pod_uid.lower() == pod_uid.lower():
+        if is_process_in_pod(pid, pod_id, container_ids):
             proc = psutil.Process(pid)
             processes.append(Process(pid=pid, exe=proc.exe(), cmdline=proc.cmdline()))
     return ProcessList(processes=processes)
 
 
 @app.command()
-def pod_ps(pod_uid: str):
-    typer.echo(get_pod_processes(pod_uid).json())
+def pod_ps(pod_id: str, container_ids: Optional[List[str]] = typer.Argument(None)):
+    typer.echo(get_pod_processes(pod_id, container_ids).json())
 
 
 @app.command()
-def find_pid(pod_uid: str, cmdline: str, exe: str):
-    for proc in get_pod_processes(pod_uid).processes:
+def find_pid(pod_id: str, cmdline: str, exe: str, container_ids: Optional[List[str]] = typer.Argument(None)):
+    for proc in get_pod_processes(pod_id, container_ids).processes:
         if cmdline in " ".join(proc.cmdline) and exe in proc.exe:
             typer.echo(proc.pid)
 
@@ -206,11 +192,13 @@ def memory(pid: int, seconds: int = 60, verbose: bool = False):
     timeout_seconds = int(seconds * 1.1 + 10)
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
 
+
 @app.command()
 def stack_trace(pid: int, all_threads: bool = True, verbose: bool = False):
     payload = pkgutil.get_data(__package__, "payloads/stack_trace.py").decode()
     payload = payload.replace("ALL_THREADS_PLACEHOLDER", str(all_threads))
     inject_string(pid, payload, trampoline=True, trampoline_timeout=10, verbose=verbose)
+
 
 @app.command()
 def debugger(pid: int, port: int = 5678, verbose: bool = False):
@@ -218,6 +206,7 @@ def debugger(pid: int, port: int = 5678, verbose: bool = False):
     payload = payload.replace("LISTENING_PORT_PLACEHOLDER", str(port))
     timeout_seconds = 120  # might take time for payload to install debugpy
     inject_string(pid, payload, trampoline=True, trampoline_timeout=timeout_seconds, verbose=verbose)
+
 
 class LoggingLevel (Enum):
     DEBUG = "DEBUG"
