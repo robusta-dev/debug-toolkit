@@ -6,7 +6,7 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/install-poetry.py | python -
+RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN /root/.local/bin/poetry config virtualenvs.create false
 COPY poetry.lock pyproject.toml /app/
 WORKDIR /app/
