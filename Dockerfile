@@ -27,7 +27,7 @@ RUN python -m venv /app/venv && \
 FROM python:3.12-slim
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends procps gdb \
+  && apt-get install -y --no-install-recommends procps \
   && dpkg --add-architecture arm64 \
   && apt-get purge -y --auto-remove \
   && rm -rf /var/lib/apt/lists/*
